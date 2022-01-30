@@ -3,6 +3,26 @@
 For an updated version of this program see my GitHub pi-timolo project
 at https://github.com/pageauc/pi-timolo
 
+### Python 3
+
+This code was converted to run using python 3. This commands create a separated environment to install and run libraries.
+
+	python -m venv env
+	source .env/bin/activate.fish
+	python -m pip install --upgrade pip
+	pip install picamera
+	pip install Pillow
+
+### Archlinux
+
+Using archlinux to run a RPI armv6h architecture.
+
+Follow the instructions on https://archlinuxarm.org/wiki/Raspberry_Pi#Camera Section Camera, to enable the camera.
+
+The commands for the camera module are included as part of the raspberrypi-firmware package: $ /opt/vc/bin/raspistill $ /opt/vc/bin/raspivid
+
+Install gcc and openjpeg2, in case of problems to install Pillow python library.
+
 ### Prerequisites
 Requires a raspberry pi with a RPI camera module installed and tested running with
 updated raspbian operating system installed on min 8gb SD card with expanded file system
