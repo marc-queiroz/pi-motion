@@ -22,6 +22,9 @@ import datetime
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
+from PIL import ImageFile
+
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 ###########  Motion detection settings:
 # find the path of the of this python script and set some global variables
@@ -36,7 +39,7 @@ starttime = datetime.datetime.now()
 # Threshold - how much a pixel has to change by to be marked as "changed"
 threshold = 50
 # Sensitivity - how many changed pixels before capturing an image, needs to be higher if noisy view
-sensitivity = 300
+sensitivity = 25
 
 # ForceCapture - whether to force an image to be captured every forceCaptureTime seconds, values True or False
 forceCapture = True
@@ -60,7 +63,7 @@ lockfilepath = baseDir + baseFileName + ".sync"
 numsequence = True
 countpath =  baseDir + baseFileName + ".dat"
 startCount = 1000
-maxPhotos = 500
+maxPhotos = 1000
 # Overlay image name, date and time on bottom of images
 showDateOnImage = True
 # takes consistently exposed photos that are better for timelapse (daylight only)
@@ -122,18 +125,25 @@ def captureTestImage(settings, width, height):
     # print(subprocess.check_output(command, shell=True, encoding='utf-8'))
     # imageData.write(subprocess.check_output(command, shell=True, encoding='utf-8', errors='replace'))
     imageData.write(subprocess.run(command.split(' '), check=True, stdout=subprocess.PIPE, encoding='cp850', errors='replace').stdout)
+    # process = subprocess.run(command.split(' '), check=True, stdout=subprocess.PIPE, encoding='cp1252', errors=None)
     time.sleep(0.05)
+    # imageData.write(process.stdout)
+    # print('RETURN CODE FROM COMMAND', process.returncode, 'LENGTH', len(process.stdout))
+    # time.sleep(0.05)
     imageData.seek(0)
     # print(imageData.read().encode('utf-8'))
     # imageData.seek(0)
+    # im = Image.open(io.BytesIO(imageData.read().encode('cp1252')))
     im = Image.open(io.BytesIO(imageData.read().encode('cp850')))
+    # time.sleep(0.9)
     try:
         buffer = im.load()
         imageData.close()
         return im, buffer
     except OSError:
+        imageData.close()
         if debugMode:
-            print('Incomplete file')
+            print('Incomplete file', im)
         return None, None
 
 # Save a full size image to disk
@@ -217,7 +227,7 @@ def keepDiskSpaceFree(bytesToReserve):
 
 # Write Date to Image
 def writeDateToImage(imagename,datetoprint):
-    FOREGROUND = (255, 255, 255)
+    FOREGROUND = (255, 255, 0)
     print('datetoprint', datetoprint)
     text = datetoprint
     font_path = '/usr/share/fonts/TTF/FreeSansBold.ttf'
