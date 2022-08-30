@@ -1,0 +1,16 @@
+# Installation directory /lib/systemd/system/pi-motion.service  
+                           
+[Unit]
+Description=Pi-motion systemd service.
+
+[Service]
+Type=simple
+User=alarm
+Group=alarm
+# StandardOutput=append:/home/alarm/projects/pi-motion/pi-motion.log
+# StandardError=append:/home/alarm/projects/pi-motion/pi-motion.log
+ExecStart=/bin/sh -c 'exec /home/alarm/projects/pi-motion/systemd-script.sh'
+
+[Install]
+WantedBy=multi-user.target
+
